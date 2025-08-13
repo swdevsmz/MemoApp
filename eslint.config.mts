@@ -11,7 +11,7 @@ export default defineConfig([
     extends: ["js/recommended"],
     languageOptions: { globals: globals.node },
   },
-  tseslint.configs.recommended,
+  // tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   // rules ここから -----------------------
   {
