@@ -1,12 +1,31 @@
 import { JSX } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import Icon from "./Icon";
 import { Link } from "expo-router";
 import { type Memo } from "../../types/memo";
 
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db, auth } from '../config';
 
 type Props = {
   memo: Memo,
+}
+
+const handlePress = (id: string): void => {
+  if (auth.currentUser === null) return;
+  const ref = doc(db, `users/${ auth.currentUser.uid }/memos`, id);
+  Alert.alert('メモを削除します。', '宜しいですか？', [
+    {
+      text: 'キャンセル',
+    },
+    {
+      text: '削除する',
+      style: 'destructive',
+      onPress: () => {
+        deleteDoc(ref).catch(() => Alert.alert('メモの削除に失敗しました。'));
+      }
+    }
+  ]);
 }
 
 // メモリストの1アイテムを表示するコンポーネント
@@ -28,7 +47,7 @@ const MemoListItem = (props: Props): JSX.Element | null => {
           <Text style={styles.memoListItemDate}>{dateString}</Text>
         </View>
         {/* 削除ボタン（仮）部分。今は「X」表示 */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress(memo.id)}>
           <Icon name='delete' size={32} color='#B0B0B0' />
         </TouchableOpacity>
       </TouchableOpacity>
