@@ -1,24 +1,53 @@
-import { JSX } from 'react';
+import { JSX } from "react";
 import {
-    View, TextInput, StyleSheet, KeyboardAvoidingView
-} from 'react-native';
-import CircleButton from '../../components/CircleButton';
-import Icon from '../../components/Icon';
-import { router } from 'expo-router';
+    View,
+    TextInput,
+    StyleSheet,
+    KeyboardAvoidingView
+} from "react-native";
+import CircleButton from "../../components/CircleButton";
+import Icon from "../../components/Icon";
+import { router } from "expo-router";
 
-const handlePress = (): void => {
+import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { db, auth } from "../../config";
+
+import { useState } from "react";
+
+const handlePress = async (bodyText: string): Promise<void> => {
     // 新規メモ作成後の処理（例: メモ一覧へ戻るなど）
+    // async/awaitを使用するとコールバックのネストが減り、可読性が向上します。
+    if (auth.currentUser === null) return;
+
+    const ref = collection(db, `users/${ auth.currentUser.uid }/memos`);
+    await addDoc(ref, {
+        bodyText,
+        updatedAt: Timestamp.fromDate(new Date()),
+    })
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+
     router.back();
-}
+};
 
 const Create = (): JSX.Element => {
+    const [bodyText, setBodyText] = useState("");
     return (
         <KeyboardAvoidingView behavior='height' style={styles.container}>
             <View style={styles.inputContainer}>
-                <TextInput multiline style={styles.input} value=''></TextInput>
+                <TextInput
+                    multiline style={styles.input}
+                    value={bodyText}
+                    onChangeText={(text) => setBodyText(text)}
+                    autoFocus={true}
+                ></TextInput>
             </View>
-            <CircleButton onPress={handlePress}>
-                <Icon name='check' size={40} color='#fff' />
+            <CircleButton onPress={() => { handlePress(bodyText) }}>
+                <Icon name="check" size={40} color="#fff" />
             </CircleButton>
         </KeyboardAvoidingView>
     );
@@ -35,7 +64,7 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        textAlignVertical: 'top',
+        textAlignVertical: "top",
         fontSize: 16,
         lineHeight: 24,
     },
