@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import { View, StyleSheet } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import MemoListItem from "../../components/MemoListItem";
 import CircleButton from "../../components/CircleButton";
@@ -11,6 +11,8 @@ import LogOutButton from "../../components/LogOutButton";
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db, auth } from '../../config';
 
+import { type Memo } from '../../../types/memo';
+
 const handlePress = (): void => {
   // 新規メモ作成画面へ遷移
   router.push('/memo/create');
@@ -19,6 +21,8 @@ const handlePress = (): void => {
 
 // メイン画面のコンポーネント
 const List = (): JSX.Element => {
+  const [memos, setMemos] = useState<Memo[]>([]);
+
   const navigation = useNavigation();
   useEffect(() => {
     // 画面が表示されたときの処理
@@ -33,9 +37,17 @@ const List = (): JSX.Element => {
     const q = query(ref, orderBy('updatedAt', 'desc'));
     // Firestoreのコレクションを監視し、データが更新されるたびに実行される
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      const remoteMemos: Memo[] = [];
       snapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
+        const { bodyText, updatedAt } = doc.data();
+        remoteMemos.push({
+          id: doc.id,
+          bodyText,
+          updatedAt,
+        });
       });
+      setMemos(remoteMemos);
     });
     return unsubscribe;
   }, []);
@@ -43,10 +55,9 @@ const List = (): JSX.Element => {
     <View style={styles.container}>
       {/* メモリスト部分。複数のメモを一覧表示 */}
       <View>
-        {/* メモアイテムを複数表示。実際はデータから動的に生成する */}
-        <MemoListItem />
-        <MemoListItem />
-        <MemoListItem />
+        {memos.map((memo) => {
+          return < MemoListItem memo={memo} />
+        })}
       </View>
       {/* 画面右下のサークル型追加ボタン。新規メモ作成用 */}
       <CircleButton onPress={handlePress}><Icon name='plus' size={40} color='#ffffff' /></CircleButton>

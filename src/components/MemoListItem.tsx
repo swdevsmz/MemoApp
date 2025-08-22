@@ -2,23 +2,35 @@ import { JSX } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "./Icon";
 import { Link } from "expo-router";
+import { type Memo } from "../../types/memo";
+
+
+type Props = {
+  memo: Memo,
+}
 
 // メモリストの1アイテムを表示するコンポーネント
-const MemoListItem = (): JSX.Element => {
+const MemoListItem = (props: Props): JSX.Element | null => {
+  const { memo } = props;
+  const { bodyText, updatedAt } = memo;
+
+  if (bodyText === null || updatedAt === null) { return null };
+
+  const dateString = memo.updatedAt.toDate().toLocaleString('ja-JP')
   return (
     <Link href="/memo/detail" asChild={true}>
       <TouchableOpacity style={styles.memoListItem}>
         {/* メモのタイトルと日付を表示する部分 */}
         <View>
-          <Text style={styles.memoListItemTitle}>買い物リスト</Text>
-          <Text style={styles.memoListItemDate}>2025年8月1日 10:00</Text>
+          <Text numberOfLines={1} style={styles.memoListItemTitle}>{bodyText}</Text>
+          <Text style={styles.memoListItemDate}>{dateString}</Text>
         </View>
         {/* 削除ボタン（仮）部分。今は「X」表示 */}
         <TouchableOpacity>
           <Icon name='delete' size={32} color='#B0B0B0' />
         </TouchableOpacity>
       </TouchableOpacity>
-    </Link>
+    </Link >
   );
 }
 
