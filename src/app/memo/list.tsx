@@ -8,6 +8,9 @@ import Icon from "../../components/Icon";
 import { router, useNavigation } from "expo-router";
 import LogOutButton from "../../components/LogOutButton";
 
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db, auth } from '../../config';
+
 const handlePress = (): void => {
   // 新規メモ作成画面へ遷移
   router.push('/memo/create');
@@ -23,16 +26,24 @@ const List = (): JSX.Element => {
     navigation.setOptions({
       headerRight: (): JSX.Element => { return <LogOutButton /> }
     });
-  },
-    []);
+  }, []);
+  useEffect(() => {
+    if (auth.currentUser === null) return;
+    const ref = collection(db, `users/${ auth.currentUser.uid }/memos`);
+    const q = query(ref, orderBy('updatedAt', 'desc'));
+    // Firestoreのコレクションを監視し、データが更新されるたびに実行される
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+      });
+    });
+    return unsubscribe;
+  }, []);
   return (
     <View style={styles.container}>
       {/* メモリスト部分。複数のメモを一覧表示 */}
       <View>
         {/* メモアイテムを複数表示。実際はデータから動的に生成する */}
-        <MemoListItem />
-        <MemoListItem />
-        <MemoListItem />
         <MemoListItem />
         <MemoListItem />
         <MemoListItem />
