@@ -1,9 +1,9 @@
 import { JSX } from "react";
-import { View, Text, StyleSheet } from "react-native";
-
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import Icon from "./Icon";
 
 // メモリストの1アイテムを表示するコンポーネント
-const MemoListItem = ():JSX.Element => {
+const MemoListItem = (): JSX.Element => {
   return (
     <View style={styles.memoListItem}>
       {/* メモのタイトルと日付を表示する部分 */}
@@ -12,9 +12,9 @@ const MemoListItem = ():JSX.Element => {
         <Text style={styles.memoListItemDate}>2025年8月1日 10:00</Text>
       </View>
       {/* 削除ボタン（仮）部分。今は「X」表示 */}
-      <View>
-        <Text>X</Text>
-      </View>
+      <TouchableOpacity>
+        <Icon name='delete' size={32} color='#B0B0B0' />
+      </TouchableOpacity>
     </View>
   );
 }
