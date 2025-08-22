@@ -3,13 +3,17 @@ import { View, Text, ScrollView, StyleSheet } from "react-native";
 
 import CircleButton from "../../components/CircleButton";
 import Icon from "../../components/Icon";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 const handlePress = (): void => {
     router.push('/memo/edit');
 }
 
 const Detail = (): JSX.Element => {
+    const { id } = useLocalSearchParams();
+
+
+
     return (
         <View style={styles.container}>
             <View style={styles.memoHeader}>

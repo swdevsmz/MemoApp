@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useEffect, useState } from "react";
 
 import MemoListItem from "../../components/MemoListItem";
@@ -39,7 +39,6 @@ const List = (): JSX.Element => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const remoteMemos: Memo[] = [];
       snapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
         const { bodyText, updatedAt } = doc.data();
         remoteMemos.push({
           id: doc.id,
@@ -54,11 +53,10 @@ const List = (): JSX.Element => {
   return (
     <View style={styles.container}>
       {/* メモリスト部分。複数のメモを一覧表示 */}
-      <View>
-        {memos.map((memo) => {
-          return < MemoListItem memo={memo} />
-        })}
-      </View>
+      <FlatList
+        data={memos}
+        renderItem={({ item }) => <MemoListItem memo={item} />}
+      />
       {/* 画面右下のサークル型追加ボタン。新規メモ作成用 */}
       <CircleButton onPress={handlePress}><Icon name='plus' size={40} color='#ffffff' /></CircleButton>
     </View>

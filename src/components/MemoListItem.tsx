@@ -18,7 +18,9 @@ const MemoListItem = (props: Props): JSX.Element | null => {
 
   const dateString = memo.updatedAt.toDate().toLocaleString('ja-JP')
   return (
-    <Link href="/memo/detail" asChild={true}>
+    <Link
+      href={{ pathname: '/memo/detail', params: { id: memo.id } }}
+      asChild >
       <TouchableOpacity style={styles.memoListItem}>
         {/* メモのタイトルと日付を表示する部分 */}
         <View>
