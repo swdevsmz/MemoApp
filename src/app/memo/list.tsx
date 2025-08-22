@@ -5,6 +5,12 @@ import Header from "../../components/Header";
 import MemoListItem from "../../components/MemoListItem";
 import CircleButton from "../../components/CircleButton";
 import Icon from "../../components/Icon";
+import { router } from "expo-router";
+
+const handlePress = (): void => {
+  // 新規メモ作成画面へ遷移
+  router.push('/memo/create');
+}
 
 
 // メイン画面のコンポーネント
@@ -24,7 +30,7 @@ const List = (): JSX.Element => {
         <MemoListItem />
       </View>
       {/* 画面右下のサークル型追加ボタン。新規メモ作成用 */}
-      <CircleButton><Icon name='plus' size={40} color='#ffffff' /></CircleButton>
+      <CircleButton onPress={handlePress}><Icon name='plus' size={40} color='#ffffff' /></CircleButton>
     </View>
   );
 };

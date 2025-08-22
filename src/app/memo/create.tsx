@@ -5,6 +5,12 @@ import {
 import Header from '../../components/Header';
 import CircleButton from '../../components/CircleButton';
 import Icon from '../../components/Icon';
+import { router } from 'expo-router';
+
+const handlePress = (): void => {
+    // 新規メモ作成後の処理（例: メモ一覧へ戻るなど）
+    router.back();
+}
 
 const Create = (): JSX.Element => {
     return (
@@ -13,7 +19,7 @@ const Create = (): JSX.Element => {
             <View style={styles.inputContainer}>
                 <TextInput multiline style={styles.input} value=''></TextInput>
             </View>
-            <CircleButton>
+            <CircleButton onPress={handlePress}>
                 <Icon name='check' size={40} color='#fff' />
             </CircleButton>
         </KeyboardAvoidingView>

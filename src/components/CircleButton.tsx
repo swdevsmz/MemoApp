@@ -7,14 +7,15 @@ import {
 
 type Props = {
     children: JSX.Element;
-    style?: ViewStyle
+    style?: ViewStyle;
+    onPress?: () => void;
 }
 
 // 画面右下に表示されるサークル型ボタンのコンポーネント
 const CircleButton = (props: Props): JSX.Element => {
-    const { children, style } = props;
+    const { children, style, onPress } = props;
     return (
-        <TouchableOpacity style={[styles.circleButton, style]}>
+        <TouchableOpacity onPress={onPress} style={[styles.circleButton, style]}>
             {/* ボタンラベル（例: + 記号など） */}
             <Text style={styles.circleButtonLabel}>{children}</Text>
         </TouchableOpacity>
